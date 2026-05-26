@@ -1,9 +1,15 @@
 import asyncio
 import json
 import argparse
+import random
 from playwright.async_api import async_playwright
 from url_generator import generate_start_url
 from db_writer import save_listings
+
+# Delay range (seconds) between paginated requests to avoid IP flagging.
+# Chosen to mimic a human reading and scrolling through results.
+PAGE_DELAY_MIN = 2.0
+PAGE_DELAY_MAX = 5.0
 
 
 async def scrape_all_olx_pages(initial_url):
@@ -61,6 +67,13 @@ async def scrape_all_olx_pages(initial_url):
                 metadata = data.get("metadata", {})
                 current_url = metadata.get("next_page_url")
 
+                # Polite delay between paginated requests — mimics human scroll pace
+                # and reduces the chance of triggering OLX rate limiting.
+                if current_url:
+                    delay = random.uniform(PAGE_DELAY_MIN, PAGE_DELAY_MAX)
+                    print(f"Waiting {delay:.1f}s before next page...")
+                    await asyncio.sleep(delay)
+
             except json.JSONDecodeError:
                 print("End of data reached or request blocked.")
                 break
@@ -81,9 +94,11 @@ def main():
     parser.add_argument('--search-term', required=True, help='Search term to scrape')
     parser.add_argument('--location', default='1000001', help='OLX location code')
     parser.add_argument('--category-id', type=int, default=None, help='OLX category ID (e.g. 84 for Cars)')
+    parser.add_argument('--min-price', type=int, default=None, help='Minimum price filter (INR)')
+    parser.add_argument('--max-price', type=int, default=None, help='Maximum price filter (INR)')
     args = parser.parse_args()
 
-    start_url = generate_start_url(args.search_term, args.location, args.category_id)
+    start_url = generate_start_url(args.search_term, args.location, args.category_id, args.min_price, args.max_price)
     print(f"Using start URL: {start_url}")
 
     listings = asyncio.run(scrape_all_olx_pages(start_url))

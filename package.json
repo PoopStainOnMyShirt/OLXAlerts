@@ -1,0 +1,12 @@
+{
+  "name": "olxalerts",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n API,UI -c cyan.bold,magenta.bold --kill-others-on-fail \"npm run dev:api\" \"npm run dev:ui\"",
+    "dev:api": "dotnet run --project OLXAlerts.Api",
+    "dev:ui": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

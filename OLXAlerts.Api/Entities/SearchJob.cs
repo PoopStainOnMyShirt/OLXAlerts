@@ -10,6 +10,8 @@ public class SearchJob
     public string? WhatsAppNumber { get; set; }
     public NotificationChannel NotificationChannel { get; set; } = NotificationChannel.WhatsApp;
     public long? TelegramChatId { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
     public int IntervalMinutes { get; set; } = 60;
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

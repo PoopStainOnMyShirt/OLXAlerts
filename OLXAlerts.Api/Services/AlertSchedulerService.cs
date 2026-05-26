@@ -35,9 +35,19 @@ public class AlertSchedulerService(
             .Where(j => j.IsActive && j.NextRunAt <= now)
             .ToListAsync(ct);
 
-        foreach (var job in dueJobs)
+        // Stagger job runs to spread OLX API load — avoids burst requests
+        // when many jobs fire at the same scheduler tick.
+        for (int i = 0; i < dueJobs.Count; i++)
         {
-            await RunJobAsync(db, scraper, whatsApp, telegram, job, ct);
+            await RunJobAsync(db, scraper, whatsApp, telegram, dueJobs[i], ct);
+
+            // 15–30 s gap between consecutive jobs (skip after the last one).
+            if (i < dueJobs.Count - 1)
+            {
+                var interJobDelay = TimeSpan.FromSeconds(Random.Shared.Next(15, 31));
+                logger.LogInformation("Waiting {Delay}s before next job to avoid rate limiting...", interJobDelay.TotalSeconds);
+                await Task.Delay(interJobDelay, ct);
+            }
         }
     }
 
@@ -107,6 +117,9 @@ public class AlertSchedulerService(
                 }
 
                 db.AlertLogs.Add(log);
+
+                // 1–2 s gap between notifications — Telegram allows 1 msg/s per chat.
+                await Task.Delay(TimeSpan.FromMilliseconds(Random.Shared.Next(1000, 2001)), ct);
             }
 
             await db.SaveChangesAsync(ct);
