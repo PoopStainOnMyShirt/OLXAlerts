@@ -12,6 +12,8 @@ public class SearchJobResponseDto
     public NotificationChannel NotificationChannel { get; set; }
     public string? WhatsAppNumber { get; set; }
     public long? TelegramChatId { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
     public int IntervalMinutes { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }

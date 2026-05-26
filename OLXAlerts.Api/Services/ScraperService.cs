@@ -25,9 +25,22 @@ public partial class ScraperService(IConfiguration config, ILogger<ScraperServic
         };
 
         if (job.CategoryId.HasValue)
+        {
             psi.ArgumentList.Add("--category-id");
-        if (job.CategoryId.HasValue)
             psi.ArgumentList.Add(job.CategoryId.Value.ToString());
+        }
+
+        if (job.MinPrice.HasValue)
+        {
+            psi.ArgumentList.Add("--min-price");
+            psi.ArgumentList.Add(job.MinPrice.Value.ToString("F0"));
+        }
+
+        if (job.MaxPrice.HasValue)
+        {
+            psi.ArgumentList.Add("--max-price");
+            psi.ArgumentList.Add(job.MaxPrice.Value.ToString("F0"));
+        }
 
         // Pass DB credentials via environment variables (not CLI args) to keep secrets out of process list
         var conn = config.GetConnectionString("Postgres") ?? string.Empty;

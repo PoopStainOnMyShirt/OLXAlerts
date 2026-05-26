@@ -49,6 +49,8 @@ public class SearchJobsController(
             NotificationChannel = dto.NotificationChannel,
             WhatsAppNumber = dto.WhatsAppNumber,
             TelegramChatId = dto.TelegramChatId,
+            MinPrice = dto.MinPrice,
+            MaxPrice = dto.MaxPrice,
             IntervalMinutes = dto.IntervalMinutes,
         };
         db.SearchJobs.Add(job);
@@ -71,6 +73,8 @@ public class SearchJobsController(
         if (dto.NotificationChannel.HasValue) job.NotificationChannel = dto.NotificationChannel.Value;
         if (dto.WhatsAppNumber is not null) job.WhatsAppNumber = dto.WhatsAppNumber;
         if (dto.TelegramChatId.HasValue) job.TelegramChatId = dto.TelegramChatId;
+        if (dto.MinPrice.HasValue) job.MinPrice = dto.MinPrice;
+        if (dto.MaxPrice.HasValue) job.MaxPrice = dto.MaxPrice;
 
         await db.SaveChangesAsync();
         return Ok(ToDto(job));
@@ -139,6 +143,8 @@ public class SearchJobsController(
         NotificationChannel = j.NotificationChannel,
         WhatsAppNumber = j.WhatsAppNumber,
         TelegramChatId = j.TelegramChatId,
+        MinPrice = j.MinPrice,
+        MaxPrice = j.MaxPrice,
         IntervalMinutes = j.IntervalMinutes,
         IsActive = j.IsActive,
         CreatedAt = j.CreatedAt,

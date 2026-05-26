@@ -10,6 +10,9 @@ public class UpdateSearchJobDto
     public string? LocationName { get; set; }
     public int? CategoryId { get; set; }
 
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+
     [Range(1, 10080)]
     public int? IntervalMinutes { get; set; }
 

@@ -6,6 +6,12 @@ using OLXAlerts.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS — allow Vite dev server
+builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
+    p.WithOrigins("http://localhost:5173")
+     .AllowAnyHeader()
+     .AllowAnyMethod()));
+
 // Controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -92,6 +98,7 @@ app.MapOpenApi();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/openapi/v1.json", "OLXAlerts API v1"));
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseRateLimiter();
 app.MapControllers();
 app.Run();

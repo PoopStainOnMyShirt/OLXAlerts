@@ -21,6 +21,12 @@ public class CreateSearchJobDto : IValidatableObject
 
     public long? TelegramChatId { get; set; }
 
+    [Range(0, double.MaxValue, ErrorMessage = "MinPrice must be non-negative.")]
+    public decimal? MinPrice { get; set; }
+
+    [Range(0, double.MaxValue, ErrorMessage = "MaxPrice must be non-negative.")]
+    public decimal? MaxPrice { get; set; }
+
     [Range(1, 10080)]
     public int IntervalMinutes { get; set; } = 60;
 
