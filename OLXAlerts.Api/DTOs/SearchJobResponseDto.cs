@@ -1,3 +1,5 @@
+using OLXAlerts.Api.Entities;
+
 namespace OLXAlerts.Api.DTOs;
 
 public class SearchJobResponseDto
@@ -7,7 +9,9 @@ public class SearchJobResponseDto
     public string LocationCode { get; set; } = string.Empty;
     public string? LocationName { get; set; }
     public int? CategoryId { get; set; }
-    public string WhatsAppNumber { get; set; } = string.Empty;
+    public NotificationChannel NotificationChannel { get; set; }
+    public string? WhatsAppNumber { get; set; }
+    public long? TelegramChatId { get; set; }
     public int IntervalMinutes { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }

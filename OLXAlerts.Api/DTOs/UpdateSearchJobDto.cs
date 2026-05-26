@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using OLXAlerts.Api.Entities;
 
 namespace OLXAlerts.Api.DTOs;
 
@@ -13,4 +14,7 @@ public class UpdateSearchJobDto
     public int? IntervalMinutes { get; set; }
 
     public bool? IsActive { get; set; }
+    public NotificationChannel? NotificationChannel { get; set; }
+    public string? WhatsAppNumber { get; set; }
+    public long? TelegramChatId { get; set; }
 }

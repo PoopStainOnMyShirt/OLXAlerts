@@ -27,6 +27,7 @@ public class AlertSchedulerService(
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var scraper = scope.ServiceProvider.GetRequiredService<ScraperService>();
         var whatsApp = scope.ServiceProvider.GetRequiredService<IWhatsAppService>();
+        var telegram = scope.ServiceProvider.GetRequiredService<ITelegramService>();
 
         var now = DateTime.UtcNow;
 
@@ -36,7 +37,7 @@ public class AlertSchedulerService(
 
         foreach (var job in dueJobs)
         {
-            await RunJobAsync(db, scraper, whatsApp, job, ct);
+            await RunJobAsync(db, scraper, whatsApp, telegram, job, ct);
         }
     }
 
@@ -44,6 +45,7 @@ public class AlertSchedulerService(
         AppDbContext db,
         ScraperService scraper,
         IWhatsAppService whatsApp,
+        ITelegramService telegram,
         SearchJob job,
         CancellationToken ct)
     {
@@ -71,15 +73,39 @@ public class AlertSchedulerService(
 
             foreach (var listing in newListings)
             {
-                var sid = await whatsApp.SendAlertAsync(job.WhatsAppNumber, listing);
-                var log = new AlertLog
+                string? sid;
+                AlertLog log;
+
+                if (job.NotificationChannel == NotificationChannel.Telegram && job.TelegramChatId.HasValue)
                 {
-                    JobId = job.Id,
-                    ListingId = listing.Id,
-                    WhatsAppNumber = job.WhatsAppNumber,
-                    MessageSid = sid,
-                    Status = sid is null ? "failed" : "sent",
-                };
+                    sid = await telegram.SendAlertAsync(job.TelegramChatId.Value, listing);
+                    log = new AlertLog
+                    {
+                        JobId = job.Id,
+                        ListingId = listing.Id,
+                        TelegramChatId = job.TelegramChatId,
+                        MessageSid = sid,
+                        Status = sid is null ? "failed" : "sent",
+                    };
+                }
+                else if (job.NotificationChannel == NotificationChannel.WhatsApp && job.WhatsAppNumber is not null)
+                {
+                    sid = await whatsApp.SendAlertAsync(job.WhatsAppNumber, listing);
+                    log = new AlertLog
+                    {
+                        JobId = job.Id,
+                        ListingId = listing.Id,
+                        WhatsAppNumber = job.WhatsAppNumber,
+                        MessageSid = sid,
+                        Status = sid is null ? "failed" : "sent",
+                    };
+                }
+                else
+                {
+                    logger.LogWarning("Job {JobId} has no valid notification channel configured, skipping listing {ListingId}", job.Id, listing.Id);
+                    continue;
+                }
+
                 db.AlertLogs.Add(log);
             }
 
