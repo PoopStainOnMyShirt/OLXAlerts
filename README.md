@@ -2,6 +2,8 @@
 
 A scheduled marketplace alerts system for OLX India. Create search jobs via a React dashboard, scrape listings automatically on a configurable interval, and receive Telegram notifications for new listings.
 
+<img width="1918" height="1030" alt="image" src="https://github.com/user-attachments/assets/4d3f8b63-deb4-4ff7-94aa-00dad6e8b702" />
+
 ## Architecture
 
 ```
