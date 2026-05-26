@@ -1,0 +1,23 @@
+# Secrets
+.env
+OLXAlerts.Api/appsettings.Development.json
+
+# .NET
+OLXAlerts.Api/bin/
+OLXAlerts.Api/obj/
+*.user
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+scraper/__pycache__/
+
+# Docker volumes
+pgdata/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.sln.docstates
