@@ -20,7 +20,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.LocationCode).HasColumnName("location_code").HasDefaultValue("1000001");
             e.Property(x => x.LocationName).HasColumnName("location_name");
             e.Property(x => x.CategoryId).HasColumnName("category_id");
-            e.Property(x => x.WhatsAppNumber).HasColumnName("whatsapp_number").IsRequired();
+            e.Property(x => x.WhatsAppNumber).HasColumnName("whatsapp_number");
+            e.Property(x => x.NotificationChannel).HasColumnName("notification_channel").HasDefaultValue(NotificationChannel.WhatsApp);
+            e.Property(x => x.TelegramChatId).HasColumnName("telegram_chat_id");
             e.Property(x => x.IntervalMinutes).HasColumnName("interval_minutes").HasDefaultValue(60);
             e.Property(x => x.IsActive).HasColumnName("is_active").HasDefaultValue(true);
             e.Property(x => x.CreatedAt).HasColumnName("created_at").HasDefaultValueSql("NOW()");
@@ -56,7 +58,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(x => x.Id).HasColumnName("id").UseIdentityColumn();
             e.Property(x => x.JobId).HasColumnName("job_id");
             e.Property(x => x.ListingId).HasColumnName("listing_id").IsRequired();
-            e.Property(x => x.WhatsAppNumber).HasColumnName("whatsapp_number").IsRequired();
+            e.Property(x => x.WhatsAppNumber).HasColumnName("whatsapp_number");
+            e.Property(x => x.TelegramChatId).HasColumnName("telegram_chat_id");
             e.Property(x => x.MessageSid).HasColumnName("message_sid");
             e.Property(x => x.SentAt).HasColumnName("sent_at").HasDefaultValueSql("NOW()");
             e.Property(x => x.Status).HasColumnName("status").HasDefaultValue("sent");

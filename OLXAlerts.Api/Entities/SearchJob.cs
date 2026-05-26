@@ -7,7 +7,9 @@ public class SearchJob
     public string LocationCode { get; set; } = "1000001";
     public string? LocationName { get; set; }
     public int? CategoryId { get; set; }
-    public string WhatsAppNumber { get; set; } = string.Empty;
+    public string? WhatsAppNumber { get; set; }
+    public NotificationChannel NotificationChannel { get; set; } = NotificationChannel.WhatsApp;
+    public long? TelegramChatId { get; set; }
     public int IntervalMinutes { get; set; } = 60;
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

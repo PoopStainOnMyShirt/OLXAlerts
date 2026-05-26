@@ -15,6 +15,7 @@ public class SearchJobsController(
     AppDbContext db,
     ScraperService scraperService,
     IWhatsAppService whatsApp,
+    ITelegramService telegram,
     AlertSchedulerService scheduler,
     ILogger<SearchJobsController> logger) : ControllerBase
 {
@@ -45,7 +46,9 @@ public class SearchJobsController(
             LocationCode = dto.LocationCode,
             LocationName = dto.LocationName,
             CategoryId = dto.CategoryId,
+            NotificationChannel = dto.NotificationChannel,
             WhatsAppNumber = dto.WhatsAppNumber,
+            TelegramChatId = dto.TelegramChatId,
             IntervalMinutes = dto.IntervalMinutes,
         };
         db.SearchJobs.Add(job);
@@ -65,6 +68,9 @@ public class SearchJobsController(
         if (dto.CategoryId.HasValue) job.CategoryId = dto.CategoryId;
         if (dto.IntervalMinutes.HasValue) job.IntervalMinutes = dto.IntervalMinutes.Value;
         if (dto.IsActive.HasValue) job.IsActive = dto.IsActive.Value;
+        if (dto.NotificationChannel.HasValue) job.NotificationChannel = dto.NotificationChannel.Value;
+        if (dto.WhatsAppNumber is not null) job.WhatsAppNumber = dto.WhatsAppNumber;
+        if (dto.TelegramChatId.HasValue) job.TelegramChatId = dto.TelegramChatId;
 
         await db.SaveChangesAsync();
         return Ok(ToDto(job));
@@ -88,7 +94,7 @@ public class SearchJobsController(
         if (job is null) return NotFound();
 
         logger.LogInformation("Manual trigger for job {JobId}", id);
-        await scheduler.RunJobAsync(db, scraperService, whatsApp, job, HttpContext.RequestAborted);
+        await scheduler.RunJobAsync(db, scraperService, whatsApp, telegram, job, HttpContext.RequestAborted);
 
         return Ok(new { message = $"Scraper run completed for job {id}." });
     }
@@ -130,7 +136,9 @@ public class SearchJobsController(
         LocationCode = j.LocationCode,
         LocationName = j.LocationName,
         CategoryId = j.CategoryId,
+        NotificationChannel = j.NotificationChannel,
         WhatsAppNumber = j.WhatsAppNumber,
+        TelegramChatId = j.TelegramChatId,
         IntervalMinutes = j.IntervalMinutes,
         IsActive = j.IsActive,
         CreatedAt = j.CreatedAt,

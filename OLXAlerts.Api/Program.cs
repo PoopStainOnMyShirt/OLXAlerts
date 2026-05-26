@@ -15,6 +15,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
 
+// HttpClient for Telegram Bot API
+builder.Services.AddHttpClient("telegram", c =>
+{
+    c.BaseAddress = new Uri("https://api.telegram.org/");
+    c.Timeout = TimeSpan.FromSeconds(10);
+});
+
 // HttpClient for OLX reference API (locations, categories)
 builder.Services.AddHttpClient("olx", c =>
 {
@@ -28,6 +35,7 @@ builder.Services.AddHttpClient("olx", c =>
 // Application services
 builder.Services.AddScoped<ScraperService>();
 builder.Services.AddScoped<IWhatsAppService, TwilioWhatsAppService>();
+builder.Services.AddScoped<ITelegramService, TelegramService>();
 builder.Services.AddSingleton<AlertSchedulerService>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<AlertSchedulerService>());
 
