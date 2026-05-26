@@ -91,8 +91,6 @@ POST /api/search-jobs
 | `Scraper:ScriptPath` | Absolute path to `scraper.py` |
 | `Scraper:PythonBin` | Python executable (`python` / `python3`) |
 
-Secrets go in `.env` (Docker) or `appsettings.Development.json` (local). Never committed.
-
 ## Database Schema
 
 Three tables managed by EF Core migrations: `search_jobs`, `listings` (composite PK `id + job_id`), `alert_logs`.
