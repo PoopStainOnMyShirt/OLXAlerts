@@ -19,14 +19,16 @@ React Dashboard → REST API → PostgreSQL ← Python scraper (Playwright)
 ## Features
 
 - **Dashboard UI** — create, edit, pause/resume, and manually trigger jobs from the browser
+- Live scraping progress indicator (bottom-right floating badge while a run is in flight)
 - Full CRUD for search jobs (search term, location, category, price range, interval)
 - City and state-level location search — selecting a state includes all cities within it
-- Price range filtering passed through to OLX search (`price_from` / `price_to`)
+- Price range filtering passed through to OLX search (`price_min` / `price_max`)
 - Results sorted newest-first (`sort=desc-creation`) — critical for timely alerts
 - Telegram alerts with direct OLX listing links
 - Deduplication via `ON CONFLICT DO NOTHING` — re-scraping never sends duplicate alerts
 - Background scheduler polls every 30 seconds; `next_run_at` updated before each run to prevent double-fire
-- Rate limiting: 60 req/min (CRUD), 5 req/min (manual trigger), 20 req/min (reference data)
+- Anti-scraping rate limits: 2–5 s between paginated requests, 15–30 s stagger between jobs, 1–2 s between Telegram notifications
+- API rate limiting: 60 req/min (CRUD), 5 req/min (manual trigger), 20 req/min (reference data)
 - Browse valid location IDs (7,439 cities) and category IDs via `/api/olx/locations` and `/api/olx/categories`
 
 ## Quickstart (local dev)
